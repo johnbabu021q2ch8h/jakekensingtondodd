@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="IndexBar">
+        <attr name="indexBarColor" format="color|reference" />
+        <attr name="indexBarColorPressed" format="color|reference" />
+        <attr name="alphabetTextColor" format="color|reference" />
+        <attr name="alphabetTextSize" format="dimension|reference" />
+        <attr name="alphabetOffset" format="dimension|reference" />
+        <attr name="indexBarRound" format="dimension|reference" />
+        <attr name="withinIndexBar" format="boolean" />
+    </declare-styleable>
+</resources>

@@ -1,17 +1,34 @@
 package com.droideep.indexbar.sample;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import com.droideep.indexbar.IndexBar;
+import com.droideep.indexbar.sample.common.dummydata.Cheeses;
+
+import java.util.List;
 
 
-public class IndexBarActivity extends ActionBarActivity {
+public class IndexBarActivity extends AppCompatActivity {
+
+    private ListView mListView;
+    private IndexBar mIndexBar;
+
+    private final List<String> dummyData = Cheeses.asList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_index_bar);
+
+        mListView = (ListView) findViewById(android.R.id.list);
+        mListView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, dummyData));
+        mIndexBar = (IndexBar) findViewById(R.id.index_bar);
+        mIndexBar.setSections(sections());
     }
 
     @Override
@@ -34,5 +51,15 @@ public class IndexBarActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private String[] sections() {
+        final int length = 26;
+        final String[] sections = new String[length];
+        char c = 'A';
+        for (int i = 0; i < length; i++) {
+            sections[i] = String.valueOf(c++);
+        }
+        return sections;
     }
 }
