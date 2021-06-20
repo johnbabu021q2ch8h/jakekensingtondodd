@@ -14,6 +14,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 
 import com.droideep.indexbar.utils.MetricsConverter;
 
@@ -107,18 +109,48 @@ public class IndexBar extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        setMeasuredDimension(calculateMeasuredWidth(), calculateMeasureHeight());
+        //setMeasuredDimension(calculateMeasuredWidth(), calculateMeasureHeight());
+
+        final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        final int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+
+        LayoutParams lp = getLayoutParams();
+        // 获取IndexBar顶部和底部的margin，这里不用关心左右两边的margin
+        int margin = 0;
+        // 如果布局文件使用了margin属性时，需要根据margin、mAlphabetTextSize、
+        if (lp instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) lp;
+            margin = mlp.topMargin + mlp.bottomMargin;
+        }
+
+        /**
+         * 判断IndexBar高度的裁剪模式,如果{@link heightMode} 为{@link MeasureSpec#EXACTLY}，
+         * 表示用户设置了一个确切的高度值，或者使用了{@link LayoutParams#MATCH_PARENT}属性。
+         * 如果{@link heightMode} 为 {@link MeasureSpec#AT_MOST},
+         * 表示用户使用了{@link LayoutParams#WRAP_CONTENT}属性，这时，我们会使用默认的{@link #mAlphabetPadding}，
+         * 或者用户设置的值
+         */
+        if (heightMode == MeasureSpec.EXACTLY) { // 计算mAlphabetPadding
+            final int length = mSections.length;
+            mAlphabetPadding = (heightSize - length * mAlphabetTextSize - margin) / (length + 1);
+
+            setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
+        } else {
+            setMeasuredDimension(calculateMeasuredWidth(), calculateMeasureHeight());
+        }
+
+
     }
 
     private int calculateMeasuredWidth() {
-        final int measuredWidth = (int) (getAlphabetTextSize() + getAlphabetOffset() * 2);
+        final int measuredWidth = (int) (getAlphabetTextSize() + getAlphabetPadding() * 2);
         Log.v(LOG_TAG, "Calculated measured width = " + measuredWidth);
         return measuredWidth;
     }
 
     private int calculateMeasureHeight() {
         final int length = mSections.length;
-        final float measureHeight = length * getAlphabetTextSize() + (length + 1) * getAlphabetOffset();
+        final float measureHeight = length * getAlphabetTextSize() + (length + 1) * getAlphabetPadding();
         return (int) measureHeight;
     }
 
@@ -237,7 +269,7 @@ public class IndexBar extends View {
     private void initAlphabetOffset(TypedArray attributes) {
         if (attributes.hasValue(R.styleable.IndexBar_alphabetOffset)) {
             mAlphabetPadding = attributes.getDimension(R.styleable.IndexBar_alphabetOffset, mAlphabetPadding);
-            Log.v(LOG_TAG, "Initialized Alphabet Offset: " + getAlphabetOffset());
+            Log.v(LOG_TAG, "Initialized Alphabet Offset: " + getAlphabetPadding());
         }
     }
 
@@ -369,7 +401,7 @@ public class IndexBar extends View {
         }
     }
 
-    public float getAlphabetOffset() {
+    public float getAlphabetPadding() {
         return mAlphabetPadding;
     }
 
