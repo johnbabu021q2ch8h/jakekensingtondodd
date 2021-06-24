@@ -4,31 +4,60 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.droideep.indexbar.IndexBar;
 import com.droideep.indexbar.sample.common.dummydata.Cheeses;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class IndexBarActivity extends AppCompatActivity {
 
     private ListView mListView;
     private IndexBar mIndexBar;
+    private TextView mPreviewText;
 
     private final List<String> dummyData = Cheeses.asList();
+    private Map<String, Integer> mSections = new HashMap<String, Integer>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_index_bar);
 
+        final int length = dummyData.size();
+        for (int i = 0; i < length; i++) {
+            String alphabet = dummyData.get(i).substring(0, 1);
+            if (!mSections.containsKey(alphabet)) {
+                mSections.put(alphabet, i);
+            }
+        }
+
         mListView = (ListView) findViewById(android.R.id.list);
         mListView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, dummyData));
         mIndexBar = (IndexBar) findViewById(R.id.index_bar);
-        mIndexBar.setSections(sections());
+        mIndexBar.setSections(alphabets());
+        mPreviewText = (TextView) findViewById(R.id.previewText);
+
+        mIndexBar.setIndexBarFilter(new IndexBar.IIndexBarFilter() {
+            @Override
+            public void filterList(float sideIndex, int position, String previewText) {
+                Integer selection = mSections.get(previewText);
+                if (selection != null) {
+                    mPreviewText.setVisibility(View.VISIBLE);
+                    mPreviewText.setText(previewText);
+                    mListView.setSelection(selection);
+                } else {
+                    mPreviewText.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     @Override
@@ -53,13 +82,13 @@ public class IndexBarActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private String[] sections() {
+    private String[] alphabets() {
         final int length = 26;
-        final String[] sections = new String[length];
+        final String[] alphabets = new String[length];
         char c = 'A';
         for (int i = 0; i < length; i++) {
-            sections[i] = String.valueOf(c++);
+            alphabets[i] = String.valueOf(c++);
         }
-        return sections;
+        return alphabets;
     }
 }

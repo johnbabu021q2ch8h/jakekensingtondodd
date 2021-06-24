@@ -20,7 +20,17 @@ import android.view.ViewGroup.LayoutParams;
 import com.droideep.indexbar.utils.MetricsConverter;
 
 /**
+ * 用在地址、通讯录检索等一些带有ListView的界面。可以滑动或点击{@link IndexBar},
+ * 注册监听{@link IIndexBarFilter},来完成你需要的功能。
+ *
  * @author bri (http://my.oschina.net/droideep)
+ * @attr ref R.attr.indexBarColorNormal     :IndexBar没被点击时的背景色
+ * @attr ref R.attr.indexBarColorPressed    :IndexBar被点击时的背景色
+ * @attr ref R.attr.alphabetTextColor       :IndexBar上每个索引字符的颜色
+ * @attr ref R.attr.alphabetTextSize        :IndexBar上每个索引字符的字符大小
+ * @attr ref R.attr.alphabetPadding         :IndexBar上索引字符的间距
+ * @attr ref R.attr.indexBarRound           :IndexBar圆角的大小
+ * @attr ref R.attr.withinIndexBar          :是否在IndexBar外也可以索引
  * @date 15-5-9.
  */
 public class IndexBar extends View {
@@ -39,7 +49,7 @@ public class IndexBar extends View {
     /**
      * 设置索引条正常显示的背景颜色,
      */
-    private int mIndexBarColor = Color.TRANSPARENT;
+    private int mIndexBarColorNormal = Color.TRANSPARENT;
 
     /**
      * 设置索引条按压时的背景色
@@ -87,7 +97,7 @@ public class IndexBar extends View {
 
     /**
      * {@link android.graphics.Paint}, which is used for drawing the elements of
-     * <b>Action Button</b>
+     * <b>IndexBar</b>
      */
     protected final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -267,8 +277,8 @@ public class IndexBar extends View {
     }
 
     private void initAlphabetOffset(TypedArray attributes) {
-        if (attributes.hasValue(R.styleable.IndexBar_alphabetOffset)) {
-            mAlphabetPadding = attributes.getDimension(R.styleable.IndexBar_alphabetOffset, mAlphabetPadding);
+        if (attributes.hasValue(R.styleable.IndexBar_alphabetPadding)) {
+            mAlphabetPadding = attributes.getDimension(R.styleable.IndexBar_alphabetPadding, mAlphabetPadding);
             Log.v(LOG_TAG, "Initialized Alphabet Offset: " + getAlphabetPadding());
         }
     }
@@ -295,8 +305,8 @@ public class IndexBar extends View {
     }
 
     private void initIndexBarColor(TypedArray attributes) {
-        if (attributes.hasValue(R.styleable.IndexBar_indexBarColor)) {
-            mIndexBarColor = attributes.getColor(R.styleable.IndexBar_indexBarColor, mIndexBarColor);
+        if (attributes.hasValue(R.styleable.IndexBar_indexBarColorNormal)) {
+            mIndexBarColorNormal = attributes.getColor(R.styleable.IndexBar_indexBarColorNormal, mIndexBarColorNormal);
             Log.v(LOG_TAG, "Initialized Index Bar Color: " + getIndexBarColor());
         }
     }
@@ -379,15 +389,36 @@ public class IndexBar extends View {
     }
 
     public int getIndexBarColor() {
-        return mIndexBarColor;
+        return mIndexBarColorNormal;
+    }
+
+    public void setIndexBarColorNormal(int mIndexBarColorNormal) {
+        if (this.mIndexBarColorNormal != mIndexBarColorNormal) {
+            this.mIndexBarColorNormal = mIndexBarColorNormal;
+            invalidate();
+        }
     }
 
     public int getIndexBarColorPressed() {
         return mIndexBarColorPressed;
     }
 
+    public void setIndexBarColorPressed(int mIndexBarColorPressed) {
+        if (this.mIndexBarColorPressed != mIndexBarColorPressed) {
+            this.mIndexBarColorPressed = mIndexBarColorPressed;
+            invalidate();
+        }
+    }
+
     public int getAlphabetTextColor() {
         return mAlphabetTextColor;
+    }
+
+    public void setAlphabetTextColor(int mAlphabetTextColor) {
+        if (this.mAlphabetTextColor != mAlphabetTextColor) {
+            this.mAlphabetTextColor = mAlphabetTextColor;
+            invalidate();
+        }
     }
 
     public float getAlphabetTextSize() {
@@ -405,12 +436,37 @@ public class IndexBar extends View {
         return mAlphabetPadding;
     }
 
+    public void setAlphabetPadding(float mAlphabetPadding) {
+        if (this.mAlphabetPadding != mAlphabetPadding) {
+            this.mAlphabetPadding = mAlphabetPadding;
+            invalidate();
+        }
+    }
+
     public float getIndexBarRound() {
         return mIndexBarRound;
     }
 
+    public void setIndexBarRound(float mIndexBarRound) {
+        if (this.mIndexBarRound != mIndexBarRound) {
+            this.mIndexBarRound = mIndexBarRound;
+            invalidate();
+        }
+    }
+
     public boolean getWithinIndexBar() {
         return mWithinIndexBar;
+    }
+
+    public void setWithinIndexBar(boolean mWithinIndexBar) {
+        if (this.mWithinIndexBar != mWithinIndexBar) {
+            this.mWithinIndexBar = mWithinIndexBar;
+            invalidate();
+        }
+    }
+
+    public String[] getSections() {
+        return mSections;
     }
 
     public void setSections(String[] mSections) {
