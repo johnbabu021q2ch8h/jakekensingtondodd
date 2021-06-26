@@ -486,7 +486,12 @@ public class IndexBar extends View {
     }
 
     public interface IIndexBarFilter {
-        void filterList(float sideIndex, int position, String previewText);
+        /**
+         * @param sideIndexY  滑动IndexBar的Y轴坐标
+         * @param position    字母的索引位置
+         * @param previewText 手指触摸的字母
+         */
+        void filterList(float sideIndexY, int position, String previewText);
     }
 
     public void setIndexBarFilter(IIndexBarFilter indexBarFilter) {
