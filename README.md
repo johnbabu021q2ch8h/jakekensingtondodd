@@ -11,9 +11,9 @@ IndexBar
 ![demo](screenshot/demo1.gif)
 
 ### 整合到程序
-**1)** 添加IndexBar到你的布局文件中。
 
-```xml
+**1)** 添加IndexBar到你的布局文件中。
+--------------
 
     <ListView
         android:id="@android:id/list"
@@ -43,15 +43,16 @@ IndexBar
         app:indexBarRound="5dp"
         app:withinIndexBar="true" />
 
-```
 
-_**indexBarColorNormal     IndexBar没被点击时的背景色**
-_**indexBarColorPressed    IndexBar被点击时的背景色**
-_**alphabetTextColor       IndexBar上每个索引字符的颜色**
-_**alphabetTextSize        IndexBar上每个索引字符的字符大小**
-_**alphabetPadding         IndexBar上索引字符的间距**
-_**indexBarRound           IndexBar圆角的大小**
-_**withinIndexBar          是否在IndexBar外也可以索引**
+* indexBarColorNormal     IndexBar没被点击时的背景色*
+* indexBarColorPressed    IndexBar被点击时的背景色*
+* alphabetTextColor       IndexBar上每个索引字符的颜色*
+* alphabetTextSize        IndexBar上每个索引字符的字符大小*
+* alphabetPadding         IndexBar上索引字符的间距*
+* indexBarRound           IndexBar圆角的大小*
+* withinIndexBar          是否在IndexBar外也可以索引*
+
+
 
 **2)** 在Activity或Fragment中对IndexBar实例话，注册监听器
 ```java
