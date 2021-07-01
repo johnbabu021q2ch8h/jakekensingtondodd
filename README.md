@@ -13,7 +13,6 @@ IndexBar
 ### 整合到程序
 
 **1)** 添加IndexBar到你的布局文件中。
---------------
 
     <ListView
         android:id="@android:id/list"
