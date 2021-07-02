@@ -7,6 +7,7 @@
         <attr name="alphabetTextSize" format="dimension|reference" />
         <attr name="alphabetPadding" format="dimension|reference" />
         <attr name="indexBarRound" format="dimension|reference" />
+        <attr name="indexBarSides" format="dimension|reference" />
         <attr name="withinIndexBar" format="boolean" />
     </declare-styleable>
 </resources>

@@ -29,6 +29,7 @@ import com.droideep.indexbar.utils.MetricsConverter;
  * @attr ref R.attr.alphabetTextColor       :IndexBar上每个索引字符的颜色
  * @attr ref R.attr.alphabetTextSize        :IndexBar上每个索引字符的字符大小
  * @attr ref R.attr.alphabetPadding         :IndexBar上索引字符的间距
+ * @attr ref R.attr.indexBarSides           :IndexBar与索引字符两侧的间距
  * @attr ref R.attr.indexBarRound           :IndexBar圆角的大小
  * @attr ref R.attr.withinIndexBar          :是否在IndexBar外也可以索引
  * @date 15-5-9.
@@ -75,6 +76,11 @@ public class IndexBar extends View {
      * </p>
      */
     private float mAlphabetPadding = MetricsConverter.dpToPx(getContext(), 5);
+
+    /**
+     * 设置索引条左右两侧与字母的间距，默认等于{@link #mAlphabetPadding}
+     */
+    private float mIndexBarSides = mAlphabetPadding;
 
     /**
      * 设置索引条圆角,默认为直角矩形
@@ -153,7 +159,7 @@ public class IndexBar extends View {
     }
 
     private int calculateMeasuredWidth() {
-        final int measuredWidth = (int) (getAlphabetTextSize() + getAlphabetPadding() * 2);
+        final int measuredWidth = (int) (getAlphabetTextSize() + getIndexBarSides() * 2);
         Log.v(LOG_TAG, "Calculated measured width = " + measuredWidth);
         return measuredWidth;
     }
@@ -258,7 +264,8 @@ public class IndexBar extends View {
             initIndexBarColorPressed(attributes);
             initAlphabetTextColor(attributes);
             initAlphabetTextSize(attributes);
-            initAlphabetOffset(attributes);
+            initAlphabetPadding(attributes);
+            initIndexBarSides(attributes);
             initIndexBarRound(attributes);
             initWithinIndexBar(attributes);
 
@@ -276,10 +283,17 @@ public class IndexBar extends View {
         }
     }
 
-    private void initAlphabetOffset(TypedArray attributes) {
+    private void initAlphabetPadding(TypedArray attributes) {
         if (attributes.hasValue(R.styleable.IndexBar_alphabetPadding)) {
             mAlphabetPadding = attributes.getDimension(R.styleable.IndexBar_alphabetPadding, mAlphabetPadding);
             Log.v(LOG_TAG, "Initialized Alphabet Offset: " + getAlphabetPadding());
+        }
+    }
+
+    private void initIndexBarSides(TypedArray attributes) {
+        if (attributes.hasValue(R.styleable.IndexBar_indexBarSides)) {
+            mIndexBarSides = attributes.getDimension(R.styleable.IndexBar_indexBarSides, mIndexBarSides);
+            Log.v(LOG_TAG, "Initialized Alphabet Offset: " + getIndexBarSides());
         }
     }
 
@@ -354,10 +368,11 @@ public class IndexBar extends View {
 
         final int length = mSections.length;
 
-        final float width = getWidth() - mAlphabetPadding * 2;
+        // 字母的宽度
+        final float width = getWidth() - mIndexBarSides * 2;
         final float height = (getHeight() - ((length + 1) * mAlphabetPadding)) / length;
         for (int i = 0; i < length; i++) {
-            final float l = mAlphabetPadding;
+            final float l = mIndexBarSides;
             final float t = (i + 1) * mAlphabetPadding + i * height;
             final float r = l + width;
             final float b = t + height;
@@ -441,6 +456,10 @@ public class IndexBar extends View {
             this.mAlphabetPadding = mAlphabetPadding;
             invalidate();
         }
+    }
+
+    public float getIndexBarSides() {
+        return mIndexBarSides;
     }
 
     public float getIndexBarRound() {

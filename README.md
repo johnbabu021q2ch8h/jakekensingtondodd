@@ -77,4 +77,9 @@ IndexBar
         
 ```
 
+###Changelog
+** Version 1.1.0 **
+添加属性 indexBarSizes,用于设置索引条左右两侧与字母的间距
+
+
 

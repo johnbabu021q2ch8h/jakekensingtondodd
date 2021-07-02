@@ -22,16 +22,16 @@
     <com.droideep.indexbar.IndexBar
         android:id="@+id/index_bar"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_margin="5dp"
         app:alphabetPadding="5dp"
         app:alphabetTextColor="@color/material_blue_grey_800"
         app:alphabetTextSize="12sp"
         app:indexBarColorNormal="@android:color/transparent"
         app:indexBarColorPressed="#56000000"
         app:indexBarRound="5dp"
+        app:indexBarSides="10dp"
         app:withinIndexBar="true" />
 
 </RelativeLayout>
