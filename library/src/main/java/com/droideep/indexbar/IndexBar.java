@@ -35,37 +35,32 @@ import com.droideep.indexbar.utils.MetricsConverter;
  */
 public class IndexBar extends View {
 
-    @IntDef({STATE_NORMAL, STATE_PRESSED})
-    public @interface STATE {
-    }
-
     public static final int STATE_NORMAL = 0;
     public static final int STATE_PRESSED = 1;
-
-    private int mState = STATE_NORMAL;
-
     private static final String LOG_TAG = "IndexBar";
-
+    private static final int INVALID_SECTION_INDEX = -1;
+    /**
+     * {@link android.graphics.Paint}, which is used for drawing the elements of
+     * <b>IndexBar</b>
+     */
+    protected final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private int mState = STATE_NORMAL;
     /**
      * 设置索引条正常显示的背景颜色,
      */
     private int mIndexBarColorNormal = Color.TRANSPARENT;
-
     /**
      * 设置索引条按压时的背景色
      */
     private int mIndexBarColorPressed = Color.GRAY;
-
     /**
      * 设置字体的颜色
      */
     private int mAlphabetTextColor = Color.BLACK;
-
     /**
      * 设置字体的大小
      */
     private float mAlphabetTextSize = MetricsConverter.dpToPx(getContext(), 10);
-
     /**
      * 设置索引条中字母的间距
      * <p>
@@ -75,31 +70,18 @@ public class IndexBar extends View {
      * </p>
      */
     private float mAlphabetPadding = MetricsConverter.dpToPx(getContext(), 5);
-
     /**
      * 设置索引条圆角,默认为直角矩形
      */
     private float mIndexBarRound = MetricsConverter.dpToPx(getContext(), 0);
-
     //默认在IndexBar以外，仍然可以滑动
     private boolean mWithinIndexBar = false;
-
     private String[] mSections = new String[0];
-
     private IIndexBarFilter mIndexBarFilter;
-
-    private static final int INVALID_SECTION_INDEX = -1;
-
     private boolean mIsIndexing;
 
     private int mCurrentSectionPosition;
 
-
-    /**
-     * {@link android.graphics.Paint}, which is used for drawing the elements of
-     * <b>IndexBar</b>
-     */
-    protected final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     public IndexBar(Context context) {
         super(context);
@@ -185,41 +167,43 @@ public class IndexBar extends View {
                     filterListItem(event.getY());
                     setState(STATE_PRESSED);
                     return true;
-                } else {
-                    mCurrentSectionPosition = INVALID_SECTION_INDEX;
-                    return false;
                 }
+                break;
             case MotionEvent.ACTION_MOVE:
                 if (mIsIndexing) {
-                    if (mWithinIndexBar) {
+                    if (mWithinIndexBar) { //只能在IndexBar内部滑动
                         if (contains(event.getX(), event.getY())) {
                             filterListItem(event.getY());
+                        } else { // 否则，如果滑动的位置已经不在IndexBar内部时
+                            mIsIndexing = false;
+                            mCurrentSectionPosition = INVALID_SECTION_INDEX;
+                            setState(STATE_NORMAL);
+                            if (mIndexBarFilter != null) {
+                                mIndexBarFilter.filterList(0, mCurrentSectionPosition, null);
+                            }
                             return true;
                         }
-                    } else {
-                        if (contains(event.getY())) {
-                            filterListItem(event.getY());
-                            return true;
-                        }
+                    } else { // 可以在IndexBar以外滑动
+                        filterListItem(event.getY());
+                        return true;
                     }
-                    mCurrentSectionPosition = INVALID_SECTION_INDEX;
-                    return false;
                 }
-                return false;
+                break;
             case MotionEvent.ACTION_UP:
                 if (mIsIndexing) {
                     mIsIndexing = false;
                     mCurrentSectionPosition = INVALID_SECTION_INDEX;
-                    if (mIndexBarFilter != null) {
-                        mIndexBarFilter.filterList(0, INVALID_SECTION_INDEX, null);
-                    }
                     setState(STATE_NORMAL);
+                    if (mIndexBarFilter != null) {
+                        mIndexBarFilter.filterList(0, mCurrentSectionPosition, null);
+                    }
                     return true;
                 }
+                break;
             default:
-                Log.v(LOG_TAG, "Unrecognized motion event detected");
-                return false;
+                break;
         }
+        return false;
     }
 
     private boolean contains(float y) {
@@ -231,6 +215,11 @@ public class IndexBar extends View {
         return (x >= 0 && y >= 0 && x <= getWidth() && y <= getHeight());
     }
 
+    /**
+     * 根据当前滑动的Y轴坐标，给{@link #mCurrentSectionPosition}赋值
+     *
+     * @param sideIndexY
+     */
     private void filterListItem(float sideIndexY) {
         int top = getTop();
         mCurrentSectionPosition = (int) (((sideIndexY) - mAlphabetPadding) /
@@ -377,15 +366,15 @@ public class IndexBar extends View {
         return getIndexBarRound() > 0.0f;
     }
 
+    public int getState() {
+        return mState;
+    }
+
     public void setState(@STATE int state) {
         if (mState != state) {
             mState = state;
             invalidate();
         }
-    }
-
-    public int getState() {
-        return mState;
     }
 
     public int getIndexBarColor() {
@@ -485,6 +474,14 @@ public class IndexBar extends View {
         Log.v(LOG_TAG, "Paint reset");
     }
 
+    public void setIndexBarFilter(IIndexBarFilter indexBarFilter) {
+        this.mIndexBarFilter = indexBarFilter;
+    }
+
+    @IntDef({STATE_NORMAL, STATE_PRESSED})
+    public @interface STATE {
+    }
+
     public interface IIndexBarFilter {
         /**
          * @param sideIndexY  滑动IndexBar的Y轴坐标
@@ -492,9 +489,5 @@ public class IndexBar extends View {
          * @param previewText 手指触摸的字母
          */
         void filterList(float sideIndexY, int position, String previewText);
-    }
-
-    public void setIndexBarFilter(IIndexBarFilter indexBarFilter) {
-        this.mIndexBarFilter = indexBarFilter;
     }
 }
