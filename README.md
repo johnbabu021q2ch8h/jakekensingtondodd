@@ -53,7 +53,7 @@ IndexBar
 
 
 
-**2)** 在Activity或Fragment中对IndexBar实例话，注册监听器
+**2)** 在Activity或Fragment中对IndexBar实例化，注册监听器
 ```java
 
 	mIndexBar.setIndexBarFilter(new IndexBar.IIndexBarFilter() {
