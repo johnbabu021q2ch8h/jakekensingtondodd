@@ -1,6 +1,12 @@
 IndexBar
 ========
 
+## 安装
+添加这个依赖到你的'build.gradle'(available from mavenCentral and jcenter) 
+```gradle
+compile 'io.github.brightyoyo:indexbar:1.0.0'
+```
+
 ### 描述
 仿微信通讯录索引条
 
@@ -80,6 +86,5 @@ IndexBar
 ###Changelog
 **Version 1.1.0**
 添加属性 indexBarSizes,用于设置索引条左右两侧与字母的间距
-
 
 
